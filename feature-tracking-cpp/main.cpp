@@ -57,23 +57,32 @@ int main() {
             pts2.push_back(kp2[match.trainIdx].pt);
         }
 
-        vector<uchar> mask;
+        vector<char> mask;
         if (pts1.size() >= 4) {
-            findHomography(pts1, pts2, RANSAC, 3, mask);
+            vector<uchar> uchar_mask;
+            findHomography(pts1, pts2, RANSAC, 3, uchar_mask);
+            mask.assign(uchar_mask.begin(), uchar_mask.end());
         } else {
             mask.resize(good_matches.size(), 1);
-        }
+        } 
 
         // Draw matches
         Mat outImg;
-        drawMatches(img1, kp1, img2, kp2, good_matches, outImg,
-                    Scalar::all(-1), Scalar::all(-1), mask,
-                    DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+        drawMatches(
+            img1, kp1,
+            img2, kp2,
+            good_matches,
+            outImg,
+            Scalar::all(-1),
+            Scalar::all(-1),
+            mask,
+            DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS
+        );
 
-        // Save
+        // Save output
+        fs::create_directory("output");
         string outPath = "output/match_" + to_string(i) + ".png";
         imwrite(outPath, outImg);
-
         cout << "Saved: " << outPath << endl;
     }
 
