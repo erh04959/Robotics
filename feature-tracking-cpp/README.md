@@ -17,13 +17,18 @@ Outlier Rejection: RANSAC for homography-based filtering
 Visualization: Matches drawn frame-by-frame and saved as PNGs, compiled into an MP4 video
 How to Run:
 
-Build the project (from the root directory): mkdir build && cd build
+### Build the project (from the root directory): 
+mkdir build && cd build
 cmake ..
 make
 cd ..
-Run the executable: ./build/FeatureTracking
-(Ensure the images/ folder contains your 200 input frames.)
-Rename output images (for video creation): cd output
-a=0; for f in match_*.png; do mv "$f" $(printf "match_%03d.png" "$a"); ((a++)); done
+
+### Run the executable: 
+./build/FeatureTracking
+
+### Rename output images (for video creation): 
+cd output
+a=0; for f in match_*.png; do mv "$f" $(printf "match_%03d.png" "$a"); ((a++));
 cd ..
-Generate video: ffmpeg -framerate 10 -i output/match_%03d.png -c:v libx264 -pix_fmt yuv420p tracking_result.mp4
+### Generate video: 
+ffmpeg -framerate 10 -i output/match_%03d.png -c:v libx264 -pix_fmt yuv420p tracking_result.mp4
