@@ -24,13 +24,19 @@ int main() {
     Ptr<ORB> orb = ORB::create(1000);
 
     for (size_t i = 0; i < imagePaths.size() - 1; ++i) {
-        Mat img1 = imread(imagePaths[i], IMREAD_GRAYSCALE);
-        Mat img2 = imread(imagePaths[i + 1], IMREAD_GRAYSCALE);
+        // Load color images for display
+        Mat img1_color = imread(imagePaths[i], IMREAD_COLOR);
+        Mat img2_color = imread(imagePaths[i + 1], IMREAD_COLOR);
 
-        if (img1.empty() || img2.empty()) {
+        if (img1_color.empty() || img2_color.empty()) {
             cerr << "Error reading image pair: " << i << endl;
             continue;
         }
+
+        // Convert to grayscale for feature detection
+        Mat img1, img2;
+        cvtColor(img1_color, img1, COLOR_BGR2GRAY);
+        cvtColor(img2_color, img2, COLOR_BGR2GRAY);
 
         vector<KeyPoint> kp1, kp2;
         Mat des1, des2;
@@ -64,13 +70,13 @@ int main() {
             mask.assign(uchar_mask.begin(), uchar_mask.end());
         } else {
             mask.resize(good_matches.size(), 1);
-        } 
+        }
 
-        // Draw matches
+        // Draw matches (on COLOR images!)
         Mat outImg;
         drawMatches(
-            img1, kp1,
-            img2, kp2,
+            img1_color, kp1,
+            img2_color, kp2,
             good_matches,
             outImg,
             Scalar::all(-1),
